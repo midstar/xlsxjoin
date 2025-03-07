@@ -1,0 +1,71 @@
+<html>
+<head>
+
+<title>xlsxjoin</title>
+
+<script src="xlsx.full.min.js"></script>
+<script src="tablejoin.js"></script>
+
+<script>
+
+///////////////////////////////////////////////////////////////////////////////
+// Excel parsing
+
+function dragOverHandler(ev) {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+}
+
+function dropHandler(ev) {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  for (let i = 0 ; i < ev.dataTransfer.files.length ; i++) {
+    const fileName = ev.dataTransfer.files[i].name;
+    const file = ev.dataTransfer.items[i].getAsFile();
+    var reader = new FileReader();
+    reader.onload = async function(e) {
+      const table = await excelToJson(e.target.result);
+      if (table != undefined) {
+        processTable(table,fileName);
+      }
+    };
+
+    reader.onerror = function(ex) {
+      alert(ex);
+      return;
+    };
+    
+    reader.readAsBinaryString(file);
+  }
+}
+
+async function excelToJson(fileData) {
+  try {
+    var wb = XLSX.read(fileData, {type: 'binary'});
+  } catch (err) {
+    alert(err);
+    return undefined;
+  }
+
+  var sheet = wb.Sheets[wb.SheetNames[0]];
+  var rows = await XLSX.utils.sheet_to_json(sheet, { header: 1 });
+  return rows;
+}
+
+function saveFile(buffer, fileName) {
+  let blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        let link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(link.href);
+}
+
+</script>
+
+</head>
+<body  ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+Drop Excel file here
+</body>
+</html>
