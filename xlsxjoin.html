@@ -25,9 +25,10 @@ function dropHandler(ev) {
     const file = ev.dataTransfer.items[i].getAsFile();
     var reader = new FileReader();
     reader.onload = async function(e) {
-      const table = await excelToJson(e.target.result);
-      if (table != undefined) {
-        processTable(table,fileName);
+      const rows = await excelToRows(e.target.result);
+      if (rows != undefined) {
+        const table = addTable(rows,fileName);
+        document.getElementById('table-container').innerHTML = table.toHTML();
       }
     };
 
@@ -40,7 +41,7 @@ function dropHandler(ev) {
   }
 }
 
-async function excelToJson(fileData) {
+async function excelToRows(fileData) {
   try {
     var wb = XLSX.read(fileData, {type: 'binary'});
   } catch (err) {
@@ -67,5 +68,6 @@ function saveFile(buffer, fileName) {
 </head>
 <body  ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
 Drop Excel file here
+<div id="table-container"></div>
 </body>
 </html>
