@@ -4,11 +4,16 @@ jobs:
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Install NodeJS
+        uses: actions/setup-node@v2
         with:
-          node-version: 20
-      - run: yarn install
-      - uses: sibiraj-s/action-eslint@v3
-        with:
-          all-files: true
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Code Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Code Linting
+        run: npm run lint
