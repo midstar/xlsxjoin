@@ -11,7 +11,15 @@
 
 class Table {
   constructor(rows,fileName) {
-    this.rows = rows;
+    this.rows = [];
+    for (const row of rows) {
+      if (row.length > 0) {
+        this.rows.push(row);
+      }
+    }
+    if (this.rows.length < 2) {
+      throw new Error(`Table has ${this.rows.length} rows. At least two rows are required.`);
+    }
     this.fileName = fileName;
   }
 
@@ -21,7 +29,7 @@ class Table {
     html += '<tr>';
     for (const col of this.rows[0]) {
       html += '<th>';
-      html += String(col);
+      html += strVal(col);
       html += '</th>';
     }
     html += '</tr>';
@@ -30,7 +38,7 @@ class Table {
       html += '<tr>';
       for (const col of this.rows[i]) {
         html += '<td>';
-        html += String(col);
+        html += strVal(col);
         html += '</td>';  
       }  
       html += '</tr>';    
@@ -38,6 +46,13 @@ class Table {
     html += '</table>';
     return html;
   }
+}
+
+function strVal(val) {
+  if (val == undefined) {
+    return '';
+  }
+  return String(val);
 }
 
 const TABLES = [];

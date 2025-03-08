@@ -20,5 +20,6 @@ function excelToRows(fileData) {
 const fileData = FS.readFileSync('test/Test1.xlsx').buffer;
 const rows = excelToRows(fileData);
 const table = addTable(rows,'Test1.xlsx');
-console.log(table.toHTML());
+console.log(table);
+//console.log(table.toHTML());
 
