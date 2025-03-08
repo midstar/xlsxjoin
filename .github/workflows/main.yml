@@ -9,6 +9,7 @@ jobs:
         with:
           node-version: 20
       - run: yarn install
+      - run: ls
       - uses: sibiraj-s/action-eslint@v3
         with:
           eslint-args: '--ignore-path=.gitignore'
