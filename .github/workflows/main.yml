@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 on: [push]
 jobs:
   eslint:
@@ -17,3 +17,6 @@ jobs:
 
       - name: Code Linting
         run: npm run lint
+
+      - name: Code Testing
+        run: npm run test
