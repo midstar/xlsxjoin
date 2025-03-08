@@ -1,5 +1,7 @@
 # xlsxjoin - join Excel and CSV files
 
+![build status](https://github.com/midstar/xlsxjoin/actions/workflows/main.yml/badge.svg)
+
 Static WEB and Node.js command line application for joining Excel and
 CSV files. 
 
