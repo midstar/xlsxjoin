@@ -5,7 +5,7 @@ CSV files.
 
 Download files and run locally or run directly from here:
 
-[xlsx web](https://midstar.github.io/xlsxjoin/xlsxjoin.html)
+[WEB xlsxjoin](https://midstar.github.io/xlsxjoin/xlsxjoin.html)
 
 ## Notes
 

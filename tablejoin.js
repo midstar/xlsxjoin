@@ -19,7 +19,7 @@ class Table {
     let html = '<table>';
     // Heading row
     html += '<tr>';
-    for (let col of this.rows[0]) {
+    for (const col of this.rows[0]) {
       html += '<th>';
       html += String(col);
       html += '</th>';
@@ -28,7 +28,7 @@ class Table {
     // Remaining rows
     for (let i = 1 ; i < this.rows.length ; i++) {
       html += '<tr>';
-      for (let col of this.rows[i]) {
+      for (const col of this.rows[i]) {
         html += '<td>';
         html += String(col);
         html += '</td>';  
