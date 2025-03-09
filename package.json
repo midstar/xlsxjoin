@@ -1,6 +1,7 @@
 {
     "jest": {
-        "collectCoverage": true
+        "collectCoverage": true,
+        "verbose": true
     },
     "devDependencies": {
         "@eslint/js": "^9.22.0",

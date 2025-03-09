@@ -18,5 +18,19 @@ test('Empty rows', function() {
   expect(() => { addTable([]); }).toThrow('Table has 0 rows. At least two rows are required.');
   // Only one row (=Exception)
   expect(() => { addTable([[1,2]]); }).toThrow('Table has 1 rows. At least two rows are required.');
+});
 
+test('Identify key column', function() {
+  const table = addTable([
+    ['heading1',  'heading2',       ,'heading3','heading4'],
+    ['a',         'b',       'c',    'x',       'd'],
+    ['a',         'a',       'h',    'y'],
+    ['b',         'c',       'a',    'z',       'e'],
+    ['c',         'd',       'd',    'f',       'f']
+  ], '');
+  expect(table.isKey(0)).toEqual(false); // Reoccuring values
+  expect(table.isKey(1)).toEqual(true);  // All unique
+  expect(table.isKey(2)).toEqual(false); // Empty heading
+  expect(table.isKey(3)).toEqual(true);  // All unique
+  expect(table.isKey(4)).toEqual(false); // Empty cell (row 2)
 });

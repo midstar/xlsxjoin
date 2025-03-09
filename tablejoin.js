@@ -10,6 +10,7 @@
  */
 
 class Table {
+
   constructor(rows,fileName) {
     this.rows = [];
     for (const row of rows) {
@@ -21,6 +22,21 @@ class Table {
       throw new Error(`Table has ${this.rows.length} rows. At least two rows are required.`);
     }
     this.fileName = fileName;
+  }
+
+  isKey(colIndex) {
+    const values = new Set([]);
+    for (const row of this.rows) {
+      if (colIndex >= row.length) {
+        return false;
+      }
+      const value = row[colIndex];
+      if (value == undefined || values.has(value)) {
+        return false;
+      }
+      values.add(value);
+    }
+    return true;
   }
 
   toHTML() {
