@@ -5,6 +5,27 @@
  * @license MIT
  */
 
+/** Main class.
+ *
+ */
+
+class TableJoin {
+  constructor(sheetJsLib) {
+    this.xlsxlib = sheetJsLib;
+  }
+
+  /**
+   * Convert a 'binary' in CSV or Excel format to a row matrix
+   * @param {binary} binaryData - Binary data in CSV or Excel format
+   * @return {Object[][]} An array rows where each row is an array of columns
+   */
+  binaryToRows(binaryData) {
+    const wb = this.xlsxlib.read(binaryData, {type: 'binary'});
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    return this.xlsxlib.utils.sheet_to_json(sheet, { header: 1 });
+  }
+}
+
 /** Class representing a table.
  *
  */
@@ -81,4 +102,4 @@ function addTable(rows,fileName) {
 
 // To avoid module not defined error when running in browser
 if (typeof module == 'undefined') { var module = {}; }
-module.exports = { addTable }; 
+module.exports = { addTable, TableJoin }; 

@@ -8,6 +8,9 @@
 
 <script>
 
+const tableJoin = new TableJoin(XLSX);
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // Excel parsing
 
@@ -25,7 +28,8 @@ function dropHandler(ev) {
     const file = ev.dataTransfer.items[i].getAsFile();
     var reader = new FileReader();
     reader.onload = async function(e) {
-      const rows = await excelToRows(e.target.result);
+      //const rows = await excelToRows(e.target.result);
+      const rows = tableJoin.binaryToRows(e.target.result);
       if (rows != undefined) {
         const table = addTable(rows,fileName);
         document.getElementById('table-container').innerHTML = table.toHTML();
@@ -39,19 +43,6 @@ function dropHandler(ev) {
     
     reader.readAsBinaryString(file);
   }
-}
-
-async function excelToRows(fileData) {
-  try {
-    var wb = XLSX.read(fileData, {type: 'binary'});
-  } catch (err) {
-    alert(err);
-    return undefined;
-  }
-
-  var sheet = wb.Sheets[wb.SheetNames[0]];
-  var rows = await XLSX.utils.sheet_to_json(sheet, { header: 1 });
-  return rows;
 }
 
 function saveFile(buffer, fileName) {
