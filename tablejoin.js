@@ -30,6 +30,16 @@ class TableJoin {
   }
 
   /**
+   * Create and add a table based binary CSV or EXcel data. Add it to the internal
+   * Table memory.
+   * @param {binary} binaryData - Binary data in CSV or Excel format
+   * @return {Table} The created table
+   */
+  addTableByBinary(binaryData,fileName) {
+    return this.addTableByRows(this.binaryToRows(binaryData),fileName);
+  }
+
+  /**
    * Create and add a table based on row matrix. Add it to the internal
    * Table memory.
    * @param {Object[][]} rows - An array rows where each row is an array of columns

@@ -29,11 +29,14 @@ function dropHandler(ev) {
     var reader = new FileReader();
     reader.onload = async function(e) {
       //const rows = await excelToRows(e.target.result);
-      const rows = tableJoin.binaryToRows(e.target.result);
+      const table = tableJoin.addTableByBinary(e.target.result, fileName);
+      //const table = tableJoin.binaryToRows(e.target.result);
+      document.getElementById('table-container').innerHTML = table.toHTML();
+      /*
       if (rows != undefined) {
         const table = tableJoin.addTableByRows(rows,fileName);
         document.getElementById('table-container').innerHTML = table.toHTML();
-      }
+      }*/
     };
 
     reader.onerror = function(ex) {
