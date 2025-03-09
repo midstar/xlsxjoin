@@ -92,7 +92,7 @@ class TableJoin {
         rows.push(row);
       }
     }
-    return new Table(rows,'new.xlsx')
+    return new Table(rows,'new.xlsx');
   }
 
   /**
