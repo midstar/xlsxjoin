@@ -31,7 +31,7 @@ function dropHandler(ev) {
       //const rows = await excelToRows(e.target.result);
       const rows = tableJoin.binaryToRows(e.target.result);
       if (rows != undefined) {
-        const table = addTable(rows,fileName);
+        const table = tableJoin.addTableByRows(rows,fileName);
         document.getElementById('table-container').innerHTML = table.toHTML();
       }
     };

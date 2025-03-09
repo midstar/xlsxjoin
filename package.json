@@ -1,7 +1,10 @@
 {
     "jest": {
         "collectCoverage": true,
-        "verbose": true
+        "verbose": true,  
+        "coveragePathIgnorePatterns": [
+            "xlsx.full.min"
+        ]
     },
     "devDependencies": {
         "@eslint/js": "^9.22.0",

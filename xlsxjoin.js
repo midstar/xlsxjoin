@@ -2,7 +2,7 @@
 // xlsxjoin command line tool
 ///////////////////////////////////////////////////////////////////////////////
 const XLSX = require("./xlsx.full.min");
-const { addTable, TableJoin } = require('./tablejoin');
+const { TableJoin } = require('./tablejoin');
 const FS   = require("node:fs");
 
 //const fileData = FS.readFileSync('test/Test1.csv').buffer;
@@ -11,7 +11,7 @@ const tableJoin = new TableJoin(XLSX);
 //console.log(fileData);
 //const rows = excelToRows(fileData);
 const rows = tableJoin.binaryToRows(fileData);
-const table = addTable(rows,'Test1.xlsx');
+const table = tableJoin.addTableByRows(rows,'Test1.xlsx');
 console.log(table);
 //console.log(table.toHTML());
 

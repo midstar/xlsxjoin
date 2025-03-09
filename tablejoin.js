@@ -8,10 +8,14 @@
 /** Main class.
  *
  */
-
 class TableJoin {
+
+  /**
+   * @param {Object} sheetJsLib - SheetJs library (XLSX)
+   */
   constructor(sheetJsLib) {
     this.xlsxlib = sheetJsLib;
+    this.tables = [];
   }
 
   /**
@@ -23,6 +27,18 @@ class TableJoin {
     const wb = this.xlsxlib.read(binaryData, {type: 'binary'});
     const sheet = wb.Sheets[wb.SheetNames[0]];
     return this.xlsxlib.utils.sheet_to_json(sheet, { header: 1 });
+  }
+
+  /**
+   * Create and add a table based on row matrix. Add it to the internal
+   * Table memory.
+   * @param {Object[][]} rows - An array rows where each row is an array of columns
+   * @return {Table} The created table
+   */
+  addTableByRows(rows,fileName) {
+    const table = new Table(rows,fileName);
+    this.tables.push(table);
+    return table;
   }
 }
 
@@ -83,8 +99,10 @@ class Table {
     html += '</table>';
     return html;
   }
+
 }
 
+// Helper function (returns undefined as empty string)
 function strVal(val) {
   if (val == undefined) {
     return '';
@@ -92,14 +110,6 @@ function strVal(val) {
   return String(val);
 }
 
-const TABLES = [];
-
-function addTable(rows,fileName) {
-  const table = new Table(rows,fileName);
-  TABLES.push(table);
-  return table;
-}
-
 // To avoid module not defined error when running in browser
 if (typeof module == 'undefined') { var module = {}; }
-module.exports = { addTable, TableJoin }; 
+module.exports = { TableJoin }; 
