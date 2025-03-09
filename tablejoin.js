@@ -94,6 +94,20 @@ class TableJoin {
     }
     return new Table(rows,'new.xlsx')
   }
+
+  /**
+   * Join all tables
+   */
+  join() {
+    if (this.tables.length == 0) {
+      return undefined;
+    }
+    var table = this.tables[0];
+    for (let i = 1 ; i < this.tables.length ; i++) {
+      table = this.extendTable(table, this.tables[i]);
+    }
+    return table;
+  }
 }
 
 /** Class representing a table.

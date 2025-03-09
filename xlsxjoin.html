@@ -28,7 +28,8 @@ function dropHandler(ev) {
     const file = ev.dataTransfer.items[i].getAsFile();
     var reader = new FileReader();
     reader.onload = async function(e) {
-      const table = tableJoin.addTableByBinary(e.target.result, fileName);
+      tableJoin.addTableByBinary(e.target.result, fileName);
+      const table = tableJoin.join();
       document.getElementById('table-container').innerHTML = table.toHTML();
     };
 
