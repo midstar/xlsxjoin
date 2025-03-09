@@ -1,5 +1,20 @@
 const XLSX = require("../xlsx.full.min");
 const { TableJoin } = require('../tablejoin');
+const FS   = require("node:fs");
+
+test('Binary read', function() {
+  const tj = new TableJoin(XLSX);
+
+  // CSV
+  const csvData = FS.readFileSync('test/Test1.csv',{encoding: "binary", flag: "r"});
+  const csvTable = tj.addTableByBinary(csvData,'Test1.csv');
+  expect(tj.hasRow(csvTable.rows,['OEZAA','44','Paityn Harmon [C]','Speciality Engineering'])).toEqual(true);
+
+  // XLSX
+  const xlsxData = FS.readFileSync('test/Test2.xlsx',{encoding: "binary", flag: "r"});
+  const xlsxTable = tj.addTableByBinary(xlsxData,'Test2.xlsx');
+  expect(tj.hasRow(xlsxTable.rows,['Orlando Wright','7','OEZABB'])).toEqual(true);
+});
 
 test('HTML conversion', function() {
   const tj = new TableJoin(XLSX);
