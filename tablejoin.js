@@ -52,22 +52,36 @@ class TableJoin {
   }
 
   /**
+   * 
+   * @param {Object[]} row1 - first row
+   * @param {Object[]} row2 - second row
+   * @returns {boolean} - True if equal
+   */
+  rowEquals(row1,row2) {
+    if (row1.length == row2.length) {
+      for (let i = 0 ; i < row1.length ; i++) {
+        if (row1[i] != row2[i]) {
+          return false;
+        }
+        if (i == (row1.length - 1)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
    * Check if rows has row
    * 
    * @param {Object[][]} rows - An array rows where each row is an array of columns 
    * @param {Object[]} row - row to check
+   * @returns {boolean} - True if row found
    */
   hasRow(rows, row) {
     for (const row2 of rows) {
-      if (row.length == row2.length) {
-        for (let i = 0 ; i < row.length ; i++) {
-          if (row[i] != row2[i]) {
-            break;
-          }
-          if (i == (row.length - 1)) {
-            return true;
-          }
-        }
+      if (this.rowEquals(row,row2)) {
+        return true;
       }
     }
     return false;
@@ -104,7 +118,11 @@ class TableJoin {
     }
     var table = this.tables[0];
     for (let i = 1 ; i < this.tables.length ; i++) {
-      table = this.extendTable(table, this.tables[i]);
+      if (this.rowEquals(table.rows[0],this.tables[i].rows[0])) {
+        table = this.extendTable(table, this.tables[i]);
+      } else {
+        throw Error('Merge not implemented yet');
+      }
     }
     return table;
   }
