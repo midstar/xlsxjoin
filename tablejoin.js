@@ -50,6 +50,50 @@ class TableJoin {
     this.tables.push(table);
     return table;
   }
+
+  /**
+   * Check if rows has row
+   * 
+   * @param {Object[][]} rows - An array rows where each row is an array of columns 
+   * @param {Object[]} row - row to check
+   */
+  hasRow(rows, row) {
+    for (const row2 of rows) {
+      if (row.length == row2.length) {
+        for (let i = 0 ; i < row.length ; i++) {
+          if (row[i] != row2[i]) {
+            break;
+          }
+          if (i == (row.length - 1)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Extend table 1 with table 2. This is only suitable for tables
+   * that has exactly the same columns. Duplicated rows in table1
+   * are ignored.
+   * 
+   * @param {Table} table1 - First table
+   * @param {Table} table2 - Second table
+   * @return {Table} The new table
+   */
+  extendTable(table1, table2) {
+    const rows = [];
+    for (const row of table1.rows) {
+      rows.push(row);
+    }
+    for (const row of table2.rows) {
+      if (this.hasRow(rows,row) == false) {
+        rows.push(row);
+      }
+    }
+    return new Table(rows,'new.xlsx')
+  }
 }
 
 /** Class representing a table.

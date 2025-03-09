@@ -38,3 +38,49 @@ test('Identify key column', function() {
   expect(table.isKey(3)).toEqual(true);  // All unique
   expect(table.isKey(4)).toEqual(false); // Empty cell (row 2)
 });
+
+test('Check if row exists in other rows', function() {
+  const tj = new TableJoin(XLSX);
+  const rows = [
+    ['heading1',  'heading2',       ,'heading3','heading4'],
+    ['a',         'b',       'c',    'x',       'd'],
+    ['a',         'a',       'h',    'y'],
+    ['b',         'c',       'a',    'z',       'e'],
+    ['c',         'd',       'd',    'f',       'f']
+  ];
+  expect(tj.hasRow(rows,[1,2,3])).toEqual(false);
+  expect(tj.hasRow(rows, ['heading1','heading2',,'heading3','heading4'])).toEqual(true);
+  expect(tj.hasRow(rows, ['a','b','c','x','d'])).toEqual(true);
+  expect(tj.hasRow(rows, ['a','b','c','x'])).toEqual(false);
+  expect(tj.hasRow(rows, ['c','b','c','x','d'])).toEqual(false);
+  expect(tj.hasRow(rows, ['a','a','h','y'])).toEqual(true);
+  expect(tj.hasRow(rows, ['a','a','h','y','c'])).toEqual(false);
+  expect(tj.hasRow(rows, ['c','d','d','f','f'])).toEqual(true);
+});
+
+test('Extend table', function() {
+  const tj = new TableJoin(XLSX);
+  const table1 = tj.addTableByRows([
+    ['heading1',  'heading2',       ,'heading3','heading4'],
+    ['a',         'b',       'c',    'x',       'd'],
+    ['a',         'a',       'h',    'y'],
+    ['b',         'c',       'a',    'z',       'e'],
+    ['c',         'd',       'd',    'f',       'f']
+  ], '');
+  const table2 = tj.addTableByRows([
+    ['heading1',  'heading2',       ,'heading3','heading4'], // Same
+    ['a',         'b',       'c',    'x',       'd'],        // Same
+    ['a',         'a',       'h',    'y'],                   // Same
+    ['b',         'q',       'a',    'z',       'e'],        // New
+    ['c',         'd',       'd',    'f',       'f'],        // Same
+    ['a',         'b',       'c',    'd,',      'e']         // New
+  ], '');
+  table = tj.extendTable(table1, table2);
+  expect(table.rows.length).toEqual(7); 
+  expect(tj.hasRow(table.rows, ['heading1','heading2',,'heading3','heading4'])).toEqual(true);
+  expect(tj.hasRow(table.rows, ['a','b','c','x','d'])).toEqual(true);
+  expect(tj.hasRow(table.rows, ['a','b','c','x'])).toEqual(false);
+  expect(tj.hasRow(table.rows, ['b','q','a','z','e'])).toEqual(true);
+  expect(tj.hasRow(table.rows, ['c','d','d','f','f'])).toEqual(true);
+  expect(tj.hasRow(table.rows, ['a','b','c','d,','e'])).toEqual(true);
+});
