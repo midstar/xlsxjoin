@@ -165,22 +165,22 @@ test('Predefined key heading', function() {
     ['d',         'b',        'b'],
     ['c',         'c',        'a']
   ], 't2');
-  tj.keyHeadings = ['heading1'];
+  tj.setKeyHeadings(['heading1']);
   let keyHeadings = tj.getKeyHeadings();
   expect(keyHeadings.length).toEqual(1);
   expect(keyHeadings[0]).toEqual('heading1');
 
-  tj.keyHeadings = ['heading2'];
+  tj.setKeyHeadings(['heading2']);
   keyHeadings = tj.getKeyHeadings();
   expect(keyHeadings.length).toEqual(1);
   expect(keyHeadings[0]).toEqual('heading2');
 
-  tj.keyHeadings = ['heading1','heading2'];
+  tj.setKeyHeadings(['heading1','heading2']);
   keyHeadings = tj.getKeyHeadings();
   expect(keyHeadings.length).toEqual(2);
   expect(keyHeadings[0]).toEqual('heading1');
   expect(keyHeadings[1]).toEqual('heading2');
 
-  tj.keyHeadings = ['heading1','heading3'];
+  tj.setKeyHeadings(['heading1','heading3']);
   expect(() => { tj.getKeyHeadings(); }).toThrow('t2 is missing column heading3');
 });
