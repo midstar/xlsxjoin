@@ -16,6 +16,7 @@ class TableJoin {
   constructor(sheetJsLib) {
     this.xlsxlib = sheetJsLib;
     this.tables = [];
+    this.keyHeadings = undefined;
   }
 
   /**
@@ -110,6 +111,61 @@ class TableJoin {
   }
 
   /**
+   * Set key columns. If more than one, the combination of
+   * them is the unique key for each row.
+   * 
+   * If not set, the key columns will be auto detected.
+   * 
+   * @param {Object[]} keyHeadings - Set predefined key columns
+   */
+  setKeyHeadings(keyHeadings) {
+    this.keyHeadings = keyHeadings;
+  }
+
+  /**
+   * Get the key headings. 
+   * 
+   * If predefined (with setKeyHeadings) it will be validated that 
+   * all tables have these headings or an Exception will be thrown.
+   * 
+   * If not predefined, it will be auto detected.
+   * 
+   * @return {Object[]} Key headings
+   */
+  getKeyHeadings() {
+    if (this.keyHeadings != undefined) {
+      // All tables needs to have these column(s) or else it is
+      // an error
+      for (const table of this.tables) {
+        const headings = table.getHeadings();
+        for (const keyHeading of this.keyHeadings) {
+          if (headings.includes(keyHeading) == false) {
+            throw Error(`${table.fileName} is missing column ${keyHeading}`);
+          }
+        }
+      }
+      return this.keyHeadings;
+    } else {
+      // Identify common key heading in all tables. 
+      const firstKeyHeadings = this.tables[0].getKeyHeadings();
+      let keyHeadings = new Set(firstKeyHeadings);
+      for (let i = 1 ; i < this.tables.length ; i++) {
+        const otherKeyHeadings = new Set(this.tables[i].getKeyHeadings());
+        keyHeadings = new Set([...keyHeadings].filter((j) => otherKeyHeadings.has(j)));
+        if (keyHeadings.size == 0) {
+          throw Error('No common key column identified');
+        }
+      }
+
+      // Return first common key heading in first table
+      for (const keyHeading of firstKeyHeadings) {
+        keyHeadings.has(keyHeading);
+        return [keyHeading];
+      }
+    }
+  }
+
+  /**
    * Join all tables
    */
   join() {
@@ -147,6 +203,13 @@ class Table {
     this.fileName = fileName;
   }
 
+  /**
+   * Check if column "could" be a key column, i.e.
+   * all values are unique and non is undefined.
+   * 
+   * @param {int} colIndex - Column to check
+   * @return {boolean} True if key column
+   */
   isKey(colIndex) {
     const values = new Set([]);
     for (const row of this.rows) {
@@ -160,6 +223,32 @@ class Table {
       values.add(value);
     }
     return true;
+  }
+
+  /**
+   * Get all headings (column 0 value)
+   */
+  getHeadings() {
+    const result = [];
+    for (const heading of this.rows[0]) {
+      result.push(heading);
+    }
+    return result;
+  }
+
+  /**
+   * Get headings of all key columns
+   * 
+   * @return {Object[]} Headings (= column 0 value) for all key columns
+   */
+  getKeyHeadings() {
+    const result = [];
+    for (let i = 0 ; i < this.rows[0].length ; i++) {
+      if (this.isKey(i)) {
+        result.push(this.rows[0][i]);
+      }
+    }
+    return result;
   }
 
   toHTML() {

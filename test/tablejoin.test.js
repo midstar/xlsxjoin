@@ -52,6 +52,21 @@ test('Identify key column', function() {
   expect(table.isKey(2)).toEqual(false); // Empty heading
   expect(table.isKey(3)).toEqual(true);  // All unique
   expect(table.isKey(4)).toEqual(false); // Empty cell (row 2)
+
+  // Check for headings
+  const headings = table.getHeadings();
+  expect(headings.length).toEqual(5); 
+  expect(headings[0]).toEqual('heading1'); 
+  expect(headings[1]).toEqual('heading2'); 
+  expect(headings[2]).toEqual(undefined); 
+  expect(headings[3]).toEqual('heading3'); 
+  expect(headings[4]).toEqual('heading4'); 
+
+  // Check for key headings
+  const keyHeadings = table.getKeyHeadings();
+  expect(keyHeadings.length).toEqual(2); 
+  expect(keyHeadings[0]).toEqual('heading2'); 
+  expect(keyHeadings[1]).toEqual('heading3'); 
 });
 
 test('Check if row exists in other rows', function() {
@@ -98,4 +113,74 @@ test('Extend table', function() {
   expect(tj.hasRow(table.rows, ['b','q','a','z','e'])).toEqual(true);
   expect(tj.hasRow(table.rows, ['c','d','d','f','f'])).toEqual(true);
   expect(tj.hasRow(table.rows, ['a','b','c','d,','e'])).toEqual(true);
+});
+
+test('Identify common key heading', function() {
+  const tj = new TableJoin(XLSX);
+  const table1 = tj.addTableByRows([
+    ['heading1',  'heading2', 'heading3'],
+    ['a',         'd',        'g'],
+    ['b',         'e',        'h'],
+    ['c',         'f',        'i']
+  ], '');
+  const table2 = tj.addTableByRows([
+    ['headingA',  'heading1', 'headingC'],
+    ['e',         'c',        'i'],
+    ['w',         'd',        'h'],
+    ['a',         'e',        'i']
+  ], '');
+  let keyHeadings = tj.getKeyHeadings();
+  expect(keyHeadings.length).toEqual(1);
+  expect(keyHeadings[0]).toEqual('heading1');
+});
+
+test('Identify common key heading failure', function() {
+  const tj = new TableJoin(XLSX);
+  const table1 = tj.addTableByRows([
+    ['heading1',  'heading2', 'heading3'],
+    ['a',         'd',        'g'],
+    ['b',         'e',        'h'],
+    ['c',         'f',        'i']
+  ], '');
+  const table2 = tj.addTableByRows([
+    ['headingA',  'heading1', 'headingC'],
+    ['e',         'c',        'i'],
+    ['w',         'c',        'h'], // Heading 1 not unique
+    ['a',         'e',        'i']
+  ], '');
+  expect(() => { tj.getKeyHeadings(); }).toThrow('No common key column identified');
+});
+
+test('Predefined key heading', function() {
+  const tj = new TableJoin(XLSX);
+  const table1 = tj.addTableByRows([
+    ['heading1',  'heading2', 'heading3'],
+    ['a',         'a',        'a'],
+    ['b',         'b',        'b'],
+    ['a',         'c',        'a']
+  ], 't1');
+  const table2 = tj.addTableByRows([
+    ['heading1',  'heading2', 'heading4'],
+    ['c',         'a',        'a'],
+    ['d',         'b',        'b'],
+    ['c',         'c',        'a']
+  ], 't2');
+  tj.keyHeadings = ['heading1'];
+  let keyHeadings = tj.getKeyHeadings();
+  expect(keyHeadings.length).toEqual(1);
+  expect(keyHeadings[0]).toEqual('heading1');
+
+  tj.keyHeadings = ['heading2'];
+  keyHeadings = tj.getKeyHeadings();
+  expect(keyHeadings.length).toEqual(1);
+  expect(keyHeadings[0]).toEqual('heading2');
+
+  tj.keyHeadings = ['heading1','heading2'];
+  keyHeadings = tj.getKeyHeadings();
+  expect(keyHeadings.length).toEqual(2);
+  expect(keyHeadings[0]).toEqual('heading1');
+  expect(keyHeadings[1]).toEqual('heading2');
+
+  tj.keyHeadings = ['heading1','heading3'];
+  expect(() => { tj.getKeyHeadings(); }).toThrow('t2 is missing column heading3');
 });
